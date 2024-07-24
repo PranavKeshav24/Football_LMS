@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function AddPlayer() {
-  const [sportsman, setSportsman] = useState("");
+export default function AddPlayerForm() {
+  const [sportsmen, setSportsmen] = useState([]);
+  const [selectedSportsman, setSelectedSportsman] = useState("");
   const [team, setTeam] = useState("");
   const [position, setPosition] = useState("");
-  const [home, setHome] = useState(true);
+  const [home, setHome] = useState(false);
   const [starts, setStarts] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [subMin, setSubMin] = useState(0);
@@ -17,10 +18,25 @@ export default function AddPlayer() {
 
   const router = useRouter();
 
+  useEffect(() => {
+    async function fetchSportsmen() {
+      try {
+        const res = await fetch("/api/sportsman");
+        const data = await res.json();
+        console.log("Fetched sportsmen:", data.sportsmen); // Log fetched data
+        setSportsmen(data.sportsmen);
+      } catch (error) {
+        console.error("Failed to fetch sportsmen:", error);
+      }
+    }
+
+    fetchSportsmen();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!sportsman || !team || !position || starts < 0 || minutes < 0) {
+    if (!selectedSportsman || !team || !position || starts < 0 || minutes < 0) {
       alert(
         "Please fill in all required fields and ensure no negative values for starts and minutes."
       );
@@ -28,13 +44,13 @@ export default function AddPlayer() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/players", {
+      const res = await fetch("/api/players", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          sportsman,
+          sportsman: selectedSportsman,
           team,
           position,
           home,
@@ -50,7 +66,7 @@ export default function AddPlayer() {
       if (res.ok) {
         router.push("/");
       } else {
-        throw new Error("Failed to create a player");
+        throw new Error("Failed to add player");
       }
     } catch (error) {
       console.log(error);
@@ -59,41 +75,36 @@ export default function AddPlayer() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Sportsman ID:</span>
-        <input
-          onChange={(e) => setSportsman(e.target.value)}
-          value={sportsman}
-          className="border border-slate-500 px-8 py-2"
-          type="text"
-          placeholder="Sportsman ID"
-          required
-        />
-      </label>
+      <select
+        onChange={(e) => setSelectedSportsman(e.target.value)}
+        value={selectedSportsman}
+        className="border border-slate-500 px-8 py-2"
+      >
+        <option value="" disabled>
+          Select a sportsman
+        </option>
+        {sportsmen.map((s) => (
+          <option key={s._id} value={s._id}>
+            {s.name} {s.surname_1} {s.surname_2} ({s.football_name})
+          </option>
+        ))}
+      </select>
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Team ID:</span>
-        <input
-          onChange={(e) => setTeam(e.target.value)}
-          value={team}
-          className="border border-slate-500 px-8 py-2"
-          type="text"
-          placeholder="Team ID"
-          required
-        />
-      </label>
+      <input
+        onChange={(e) => setTeam(e.target.value)}
+        value={team}
+        className="border border-slate-500 px-8 py-2"
+        type="text"
+        placeholder="Team ID"
+      />
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Position:</span>
-        <input
-          onChange={(e) => setPosition(e.target.value)}
-          value={position}
-          className="border border-slate-500 px-8 py-2"
-          type="text"
-          placeholder="Position"
-          required
-        />
-      </label>
+      <input
+        onChange={(e) => setPosition(e.target.value)}
+        value={position}
+        className="border border-slate-500 px-8 py-2"
+        type="text"
+        placeholder="Position"
+      />
 
       <label className="flex items-center gap-2">
         <input
@@ -102,82 +113,56 @@ export default function AddPlayer() {
           className="border border-slate-500"
           type="checkbox"
         />
-        <span className="font-bold">Home:</span>
+        Home
       </label>
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Starts (0 or more):</span>
-        <input
-          onChange={(e) => setStarts(e.target.value)}
-          value={starts}
-          className="border border-slate-500 px-8 py-2"
-          type="number"
-          placeholder="Starts"
-          min="0"
-          required
-        />
-      </label>
+      <input
+        onChange={(e) => setStarts(e.target.value)}
+        value={starts}
+        className="border border-slate-500 px-8 py-2"
+        type="number"
+        placeholder="Starts"
+      />
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Minutes (0 or more):</span>
-        <input
-          onChange={(e) => setMinutes(e.target.value)}
-          value={minutes}
-          className="border border-slate-500 px-8 py-2"
-          type="number"
-          placeholder="Minutes"
-          min="0"
-          required
-        />
-      </label>
+      <input
+        onChange={(e) => setMinutes(e.target.value)}
+        value={minutes}
+        className="border border-slate-500 px-8 py-2"
+        type="number"
+        placeholder="Minutes"
+      />
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Sub Minutes (optional):</span>
-        <input
-          onChange={(e) => setSubMin(e.target.value)}
-          value={subMin}
-          className="border border-slate-500 px-8 py-2"
-          type="number"
-          placeholder="Sub Minutes"
-          min="0"
-        />
-      </label>
+      <input
+        onChange={(e) => setSubMin(e.target.value)}
+        value={subMin}
+        className="border border-slate-500 px-8 py-2"
+        type="number"
+        placeholder="Sub Minutes"
+      />
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Yellow Cards 1 (optional):</span>
-        <input
-          onChange={(e) => setYellow1(e.target.value)}
-          value={yellow1}
-          className="border border-slate-500 px-8 py-2"
-          type="number"
-          placeholder="Yellow 1"
-          min="0"
-        />
-      </label>
+      <input
+        onChange={(e) => setYellow1(e.target.value)}
+        value={yellow1}
+        className="border border-slate-500 px-8 py-2"
+        type="number"
+        placeholder="Yellow 1"
+      />
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Yellow Cards 2 (optional):</span>
-        <input
-          onChange={(e) => setYellow2(e.target.value)}
-          value={yellow2}
-          className="border border-slate-500 px-8 py-2"
-          type="number"
-          placeholder="Yellow 2"
-          min="0"
-        />
-      </label>
+      <input
+        onChange={(e) => setYellow2(e.target.value)}
+        value={yellow2}
+        className="border border-slate-500 px-8 py-2"
+        type="number"
+        placeholder="Yellow 2"
+      />
 
-      <label className="flex flex-col gap-1">
-        <span className="font-bold">Red Cards (optional):</span>
-        <input
-          onChange={(e) => setRed(e.target.value)}
-          value={red}
-          className="border border-slate-500 px-8 py-2"
-          type="number"
-          placeholder="Red"
-          min="0"
-        />
-      </label>
+      <input
+        onChange={(e) => setRed(e.target.value)}
+        value={red}
+        className="border border-slate-500 px-8 py-2"
+        type="number"
+        placeholder="Red"
+      />
 
       <button
         type="submit"
@@ -188,3 +173,4 @@ export default function AddPlayer() {
     </form>
   );
 }
+//60d21b4667d0d8992e610c86

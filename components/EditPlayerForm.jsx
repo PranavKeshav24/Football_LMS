@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function EditPlayerForm({
@@ -26,8 +26,24 @@ export default function EditPlayerForm({
   const [yellow1, setYellow1] = useState(initialYellow1);
   const [yellow2, setYellow2] = useState(initialYellow2);
   const [red, setRed] = useState(initialRed);
-
+  const [sportsmen, setSportsmen] = useState([]);
   const router = useRouter();
+
+  // Fetch sportsmen data
+  useEffect(() => {
+    const fetchSportsmen = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/sportsman");
+        if (!res.ok) throw new Error("Failed to fetch sportsmen");
+        const { sportsmen } = await res.json();
+        setSportsmen(sportsmen);
+      } catch (error) {
+        console.error("Error fetching sportsmen:", error);
+      }
+    };
+
+    fetchSportsmen();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,13 +87,21 @@ export default function EditPlayerForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <input
-        onChange={(e) => setSportsman(e.target.value)}
-        value={sportsman}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Sportsman ID"
-      />
+      <label className="flex flex-col">
+        <span className="mb-1">Select Sportsman</span>
+        <select
+          value={sportsman}
+          onChange={(e) => setSportsman(e.target.value)}
+          className="border border-slate-500 px-8 py-2"
+        >
+          <option value="">Select a sportsman</option>
+          {sportsmen.map((s) => (
+            <option key={s._id} value={s._id}>
+              {s.name} {s.surname_1} {s.surname_2}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <input
         onChange={(e) => setTeam(e.target.value)}

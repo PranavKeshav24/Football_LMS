@@ -2,6 +2,24 @@ import Link from "next/link";
 import RemoveBtn from "./RemoveBtn";
 import { HiPencilAlt } from "react-icons/hi";
 
+const fetchSportsmanById = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/sportsman/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch sportsman");
+    }
+
+    const data = await res.json();
+    return data.sportsman || {};
+  } catch (error) {
+    console.error("Error fetching sportsman: ", error);
+    return {};
+  }
+};
+
 const getPlayers = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/players", {
@@ -13,13 +31,20 @@ const getPlayers = async () => {
     }
 
     const data = await res.json();
-    console.log("Fetched players data: ", data); // Log the fetched data
+    const players = data.Players || [];
 
-    // Handle the 'Players' key in the API response
-    return { players: data.Players || [] };
+    // Fetch sportsman details for each player
+    const playersWithSportsmanDetails = await Promise.all(
+      players.map(async (player) => {
+        const sportsman = await fetchSportsmanById(player.sportsman);
+        return { ...player, sportsman };
+      })
+    );
+
+    return { players: playersWithSportsmanDetails };
   } catch (error) {
     console.error("Error loading players: ", error);
-    return { players: [] }; // Return an empty array in case of error
+    return { players: [] };
   }
 };
 
@@ -31,14 +56,14 @@ export default async function PlayersList() {
   }
 
   return (
-    <>
+    <div className="space-y-4">
       {players.map((p) => (
         <div
           key={p._id}
-          className="p-4 border text-black border-slate-300 my-3 flex justify-between gap-5 items-start"
+          className="p-4 border text-black border-slate-300 flex justify-between gap-5 items-start"
         >
           <div>
-            <h2 className="font-bold text-2xl">{p.sportsman || "N/A"}</h2>
+            <h2 className="font-bold text-2xl">{p.sportsman?.name || "N/A"}</h2>
             <div>Team: {p.team || "N/A"}</div>
             <div>Position: {p.position || "N/A"}</div>
             <div>Home: {p.home ? "Yes" : "No"}</div>
@@ -58,6 +83,6 @@ export default async function PlayersList() {
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 }
