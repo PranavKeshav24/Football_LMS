@@ -21,7 +21,8 @@ export default function AddPlayerForm() {
   useEffect(() => {
     async function fetchSportsmen() {
       try {
-        const res = await fetch("/api/sportsman");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/sportsman`);
         const data = await res.json();
         console.log("Fetched sportsmen:", data.sportsmen); // Log fetched data
         setSportsmen(data.sportsmen);
@@ -44,7 +45,8 @@ export default function AddPlayerForm() {
     }
 
     try {
-      const res = await fetch("/api/players", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/players`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
