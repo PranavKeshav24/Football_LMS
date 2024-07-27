@@ -2,7 +2,8 @@ import EditRefereeForm from "@/components/EditRefereeForm";
 
 const getRefereeById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/referee/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/referee/${id}`, {
       cache: "no-store",
     });
 

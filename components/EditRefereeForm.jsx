@@ -13,7 +13,8 @@ export default function EditRefereeForm({ id, name, code }) {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:3000/api/referee/${id}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/referee/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

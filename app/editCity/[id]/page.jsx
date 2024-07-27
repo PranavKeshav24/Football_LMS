@@ -2,7 +2,8 @@ import EditCityForm from "@/components/EditCityForm";
 
 const getCityById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/city/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/city/${id}`, {
       cache: "no-store",
     });
 

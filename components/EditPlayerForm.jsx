@@ -33,7 +33,10 @@ export default function EditPlayerForm({
   useEffect(() => {
     const fetchSportsmen = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/sportsman");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/sportsman`, {
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to fetch sportsmen");
         const { sportsmen } = await res.json();
         setSportsmen(sportsmen);
@@ -56,7 +59,8 @@ export default function EditPlayerForm({
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/api/players/${id}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/players/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",

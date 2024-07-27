@@ -4,7 +4,8 @@ import { HiPencilAlt } from "react-icons/hi";
 
 const getReferees = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/referee", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/referee`, {
       cache: "no-store",
     });
 

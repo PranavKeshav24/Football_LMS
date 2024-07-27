@@ -15,7 +15,8 @@ export default function EditTeamForm({ id, name, badge, isHome, isAway }) {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:3000/api/team/${id}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/team/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",

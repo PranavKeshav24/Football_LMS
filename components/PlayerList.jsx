@@ -4,7 +4,8 @@ import { HiPencilAlt } from "react-icons/hi";
 
 const fetchSportsmanById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/sportsman/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/sportsman/${id}`, {
       cache: "no-store",
     });
 
@@ -22,10 +23,10 @@ const fetchSportsmanById = async (id) => {
 
 const getPlayers = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/players", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/players`, {
       cache: "no-store",
     });
-
     if (!res.ok) {
       throw new Error("Failed to fetch players");
     }

@@ -21,7 +21,8 @@ export default function AddSportsman() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/sportsman", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/sportsman`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",

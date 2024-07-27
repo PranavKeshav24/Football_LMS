@@ -2,7 +2,8 @@ import EditManagerForm from "@/components/EditManagerForm";
 
 const getManagerById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/manager/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/manager/${id}`, {
       cache: "no-store",
     });
 

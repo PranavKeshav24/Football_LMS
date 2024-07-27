@@ -2,7 +2,8 @@ import EditSportsmanForm from "@/components/EditSportsmanForm";
 
 const getSportsmanById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/sportsman/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/sportsman/${id}`, {
       cache: "no-store",
     });
 

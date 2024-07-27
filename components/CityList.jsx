@@ -4,7 +4,8 @@ import { HiPencilAlt } from "react-icons/hi";
 
 const getCities = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/city", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/city`, {
       cache: "no-store",
     });
 

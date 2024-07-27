@@ -4,7 +4,8 @@ import { HiPencilAlt } from "react-icons/hi";
 
 const getSportsmen = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/sportsman", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/sportsman`, {
       cache: "no-store",
     });
 

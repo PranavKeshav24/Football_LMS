@@ -13,11 +13,12 @@ export default function AddManager() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sportsmenRes = await fetch("http://localhost:3000/api/sportsman");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const sportsmenRes = await fetch(`${apiUrl}/api/sportsman`);
         const sportsmenData = await sportsmenRes.json();
         setSportsmen(sportsmenData.sportsmen);
 
-        const teamsRes = await fetch("http://localhost:3000/api/team");
+        const teamsRes = await fetch(`${apiUrl}/api/team`);
         const teamsData = await teamsRes.json();
         setTeams(teamsData.teams);
       } catch (error) {
@@ -32,7 +33,8 @@ export default function AddManager() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:3000/api/manager", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/manager`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

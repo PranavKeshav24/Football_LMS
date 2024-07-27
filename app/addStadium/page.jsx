@@ -15,7 +15,8 @@ export default function AddStadium() {
   // Fetch city options from the API (assuming you have an endpoint for cities)
   const fetchCities = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/cities");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/city`);
       if (res.ok) {
         const cities = await res.json();
         setCityOptions(cities); // Assuming cities is an array of { _id, name }
@@ -41,7 +42,8 @@ export default function AddStadium() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/stadium", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/api/stadium`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

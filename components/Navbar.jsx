@@ -6,7 +6,7 @@ export default function Navbar() {
       <Link className="text-white font-bold" href={"/"}>
         Teams
       </Link>
-      <Link className="bg-white p-2" href={"/addManager"}>
+      <Link className="bg-white p-2" href={"/addMatchCup"}>
         Add Team
       </Link>
     </nav>
