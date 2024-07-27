@@ -3,21 +3,21 @@ import Player from "@/models/Player";
 import { NextResponse } from "next/server";
 
 export async function PUT(request, { params }) {
-  const { id } = params;
-  const {
-    newSportsman: sportsman,
-    newTeam: team,
-    newPosition: position,
-    newHome: home,
-    newStarts: starts,
-    newMinutes: minutes,
-    newSub_min: sub_min,
-    newYellow_1: yellow_1,
-    newYellow_2: yellow_2,
-    newRed: red,
-  } = await request.json();
-
   try {
+    const { id } = params;
+    const {
+      newSportsman: sportsman,
+      newTeam: team,
+      newPosition: position,
+      newHome: home,
+      newStarts: starts,
+      newMinutes: minutes,
+      newSub_min: sub_min,
+      newYellow_1: yellow_1,
+      newYellow_2: yellow_2,
+      newRed: red,
+    } = await request.json();
+
     await connectMongoDB();
     const result = await Player.findByIdAndUpdate(
       id,
@@ -34,7 +34,7 @@ export async function PUT(request, { params }) {
         red,
       },
       { new: true }
-    ); // Option to return the updated document
+    );
 
     if (!result) {
       return NextResponse.json(
@@ -57,9 +57,8 @@ export async function PUT(request, { params }) {
 }
 
 export async function GET(request, { params }) {
-  const { id } = params;
-
   try {
+    const { id } = params;
     await connectMongoDB();
     const player = await Player.findById(id);
 

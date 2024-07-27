@@ -2,7 +2,8 @@ import EditPlayerForm from "@/components/EditPlayerForm";
 
 const getPlayerById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/players/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/players/${id}`, {
       cache: "no-store",
     });
 

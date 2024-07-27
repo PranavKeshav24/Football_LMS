@@ -14,5 +14,7 @@ const ManagerSchema = new mongoose.Schema(
   }
 );
 
-module.exports =
+const Manager =
   mongoose.models.Manager || mongoose.model("Manager", ManagerSchema);
+
+export default Manager;
