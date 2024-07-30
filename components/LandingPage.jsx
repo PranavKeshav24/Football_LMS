@@ -80,8 +80,8 @@ export default function LandingPage() {
               <div className="grid gap-1 p-8 md:p-10">
                 <h3 className="text-xl font-bold">Reporting</h3>
                 <p className="text-muted-foreground">
-                  Generate comprehensive reports on your league's performance
-                  and statistics.
+                  Generate comprehensive reports on your league&apos;s
+                  performance and statistics.
                 </p>
               </div>
               <div className="grid gap-1 p-8 md:p-10">
@@ -132,11 +132,11 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "The Football League Management System has been a
-                  game-changer\n for our league. It has streamlined our
-                  operations, making it\n easier to manage teams, players, and
-                  schedules. The reporting\n features have been invaluable in
-                  tracking our league's\n performance."
+                  &quot;The Football League Management System has been a
+                  game-changer&apos; for our league. It has streamlined our
+                  operations, making it easier to manage teams, players, and
+                  schedules. The reporting features have been invaluable in
+                  tracking our league&apos;s performance.&quot;
                 </p>
               </div>
               <div className="grid gap-4 p-8 md:p-10">
@@ -153,11 +153,11 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "I highly recommend the Football League Management System to\n
-                  any league administrator looking to streamline their\n
-                  operations. The user-friendly interface and comprehensive\n
-                  features have made my job so much easier. It's a must-have\n
-                  for any serious football league."
+                  &quot;I highly recommend the Football League Management System
+                  to any league administrator looking to streamline their
+                  operations. The user-friendly interface and comprehensive
+                  features have made my job so much easier. It&apos;s a
+                  must-have for any serious football league.&quot;
                 </p>
               </div>
             </div>
