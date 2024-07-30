@@ -77,3 +77,31 @@ export async function GET() {
     );
   }
 }
+
+export async function DELETE(request) {
+  try {
+    const id = request.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "ID parameter is required" },
+        { status: 400 }
+      );
+    }
+
+    await connectMongoDB();
+    const result = await Match.findByIdAndDelete(id);
+
+    if (!result) {
+      return NextResponse.json({ message: "Match not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Match deleted" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting match:", error);
+    return NextResponse.json(
+      { message: "Error deleting match" },
+      { status: 500 }
+    );
+  }
+}

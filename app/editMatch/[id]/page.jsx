@@ -28,13 +28,13 @@ export default async function EditMatch({ params }) {
 
   const {
     date,
-    goals_home,
-    goals_away,
+    goals_home: goalsHome,
+    goals_away: goalsAway,
     observations,
     chronicle,
     referee,
-    home_team,
-    away_team,
+    home_team: homeTeam,
+    away_team: awayTeam,
     stadium,
     league,
     cup,
@@ -43,17 +43,17 @@ export default async function EditMatch({ params }) {
   return (
     <EditMatchForm
       id={id}
-      date={date}
-      goalsHome={goals_home}
-      goalsAway={goals_away}
-      observations={observations}
-      chronicle={chronicle}
-      referee={referee}
-      homeTeam={home_team}
-      awayTeam={away_team}
-      stadium={stadium}
-      league={league}
-      cup={cup}
+      initialDate={date}
+      initialGoalsHome={goalsHome}
+      initialGoalsAway={goalsAway}
+      initialObservations={observations}
+      initialChronicle={chronicle}
+      initialReferee={referee}
+      initialHomeTeam={homeTeam}
+      initialAwayTeam={awayTeam}
+      initialStadium={stadium}
+      initialLeague={league}
+      initialCup={cup}
     />
   );
 }

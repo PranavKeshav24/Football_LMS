@@ -8,12 +8,14 @@ export default function AddMatch() {
   const [referees, setReferees] = useState([]);
   const [stadiums, setStadiums] = useState([]);
   const [cups, setCups] = useState([]);
+  const [leagues, setLeagues] = useState([]);
 
   const [selectedHomeTeam, setSelectedHomeTeam] = useState("");
   const [selectedAwayTeam, setSelectedAwayTeam] = useState("");
   const [selectedReferee, setSelectedReferee] = useState("");
   const [selectedStadium, setSelectedStadium] = useState("");
   const [selectedCup, setSelectedCup] = useState("");
+  const [selectedLeague, setSelectedLeague] = useState("");
 
   const [date, setDate] = useState("");
   const [goalsHome, setGoalsHome] = useState("");
@@ -25,8 +27,8 @@ export default function AddMatch() {
 
   useEffect(() => {
     const fetchTeams = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${apiUrl}/api/team`);
         if (!res.ok) {
           throw new Error("Failed to fetch teams");
@@ -41,6 +43,7 @@ export default function AddMatch() {
 
     const fetchReferees = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${apiUrl}/api/referee`);
         if (!res.ok) {
           throw new Error("Failed to fetch referees");
@@ -55,6 +58,7 @@ export default function AddMatch() {
 
     const fetchStadiums = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${apiUrl}/api/stadium`);
         if (!res.ok) {
           throw new Error("Failed to fetch stadiums");
@@ -69,15 +73,31 @@ export default function AddMatch() {
 
     const fetchCups = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${apiUrl}/api/matchCup`);
         if (!res.ok) {
           throw new Error("Failed to fetch cups");
         }
         const data = await res.json();
-        setCups(data.cups || []);
+        setCups(data.matchCups || []);
       } catch (error) {
         console.error("Error fetching cups:", error);
         setCups([]);
+      }
+    };
+
+    const fetchLeagues = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/matchLeague`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch leagues");
+        }
+        const data = await res.json();
+        setLeagues(data.matchLeagues || []);
+      } catch (error) {
+        console.error("Error fetching leagues:", error);
+        setLeagues([]);
       }
     };
 
@@ -85,6 +105,7 @@ export default function AddMatch() {
     fetchReferees();
     fetchStadiums();
     fetchCups();
+    fetchLeagues();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -262,11 +283,30 @@ export default function AddMatch() {
         className="border border-slate-500 px-4 py-2"
       >
         <option value="">Select Cup</option>
-        {cups.map((cup) => (
-          <option key={cup._id} value={cup._id}>
-            {cup.competition_name}
-          </option>
-        ))}
+        {cups.length > 0 &&
+          cups.map((cup) => (
+            <option key={cup._id} value={cup._id}>
+              {cup.competition_name}
+            </option>
+          ))}
+      </select>
+
+      <label htmlFor="league" className="font-bold">
+        League:
+      </label>
+      <select
+        id="league"
+        value={selectedLeague}
+        onChange={(e) => setSelectedLeague(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
+      >
+        <option value="">Select League</option>
+        {leagues.length > 0 &&
+          leagues.map((league) => (
+            <option key={league._id} value={league._id}>
+              {league.competition_name}
+            </option>
+          ))}
       </select>
 
       <button
