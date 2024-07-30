@@ -3,6 +3,29 @@ import Match from "@/models/Match";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 
+export async function GET(request, { params }) {
+  const { id } = params;
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  }
+
+  try {
+    await connectMongoDB();
+    const match = await Match.findById(id).exec();
+    if (!match) {
+      return NextResponse.json({ message: "Match not found" }, { status: 404 });
+    }
+    return NextResponse.json({ match }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to fetch match" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(request, { params }) {
   const { id } = params;
   const {

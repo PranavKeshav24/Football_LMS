@@ -16,15 +16,19 @@ export default function AddStadium() {
   const fetchCities = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiUrl}/api/city`);
-      if (res.ok) {
-        const cities = await res.json();
-        setCityOptions(cities); // Assuming cities is an array of { _id, name }
-      } else {
+      const res = await fetch(`${apiUrl}/api/city`, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
         throw new Error("Failed to fetch cities");
       }
+
+      const data = await res.json();
+      setCityOptions(data.cities); // Update cityOptions state with the fetched data
     } catch (error) {
-      console.log(error);
+      console.log("Error loading cities: ", error);
+      setCityOptions([]); // Set cityOptions to an empty array in case of an error
     }
   };
 
@@ -97,11 +101,12 @@ export default function AddStadium() {
         className="border border-slate-500 px-8 py-2"
       >
         <option value="">Select a City</option>
-        {cityOptions.map((city) => (
-          <option key={city._id} value={city._id}>
-            {city.name}
-          </option>
-        ))}
+        {cityOptions.length > 0 &&
+          cityOptions.map((city) => (
+            <option key={city._id} value={city._id}>
+              {city.name}
+            </option>
+          ))}
       </select>
 
       <button

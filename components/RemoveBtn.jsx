@@ -3,14 +3,14 @@
 import { HiOutlineTrash } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 
-export default function RemoveBtn({ id }) {
+export default function RemoveBtn({ id, endpoint }) {
   const router = useRouter();
   const removePlayer = async () => {
     const confirmed = confirm("Are you sure?");
 
     if (confirmed) {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiUrl}/api/players?id=${id}`, {
+      const res = await fetch(`${apiUrl}/api/${endpoint}?id=${id}`, {
         method: "DELETE",
       });
 
@@ -22,7 +22,7 @@ export default function RemoveBtn({ id }) {
 
   return (
     <button onClick={removePlayer} className="text-red-400">
-      <HiOutlineTrash size={24} />
+      <HiOutlineTrash className="w-6 h-6" />
     </button>
   );
 }

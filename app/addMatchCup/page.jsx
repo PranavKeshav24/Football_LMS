@@ -33,7 +33,7 @@ export default function AddMatchCup() {
       });
 
       if (res.ok) {
-        router.push("/matchCups"); // Redirect to the match cups list page
+        router.push("/"); // Redirect to the match cups list page
       } else {
         throw new Error("Failed to add match cup");
       }

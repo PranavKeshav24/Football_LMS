@@ -1,45 +1,133 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function EditMatchForm({
   id,
-  date,
-  goalsHome,
-  goalsAway,
-  observations,
-  chronicle,
-  referee,
-  homeTeam,
-  awayTeam,
-  stadium,
-  league,
-  cup,
-  referees,
-  teams,
-  stadiums,
-  leagues,
-  cups,
+  initialDate,
+  initialGoalsHome,
+  initialGoalsAway,
+  initialObservations,
+  initialChronicle,
+  initialReferee,
+  initialHomeTeam,
+  initialAwayTeam,
+  initialStadium,
+  initialLeague,
+  initialCup,
 }) {
-  const [matchDate, setMatchDate] = useState(date);
-  const [goalsHomeState, setGoalsHomeState] = useState(goalsHome);
-  const [goalsAwayState, setGoalsAwayState] = useState(goalsAway);
-  const [observationsState, setObservationsState] = useState(
-    observations || ""
-  );
-  const [chronicleState, setChronicleState] = useState(chronicle || "");
-  const [refereeState, setRefereeState] = useState(referee || "");
-  const [homeTeamState, setHomeTeamState] = useState(homeTeam || "");
-  const [awayTeamState, setAwayTeamState] = useState(awayTeam || "");
-  const [stadiumState, setStadiumState] = useState(stadium || "");
-  const [leagueState, setLeagueState] = useState(league || "");
-  const [cupState, setCupState] = useState(cup || "");
+  const [teams, setTeams] = useState([]);
+  const [referees, setReferees] = useState([]);
+  const [stadiums, setStadiums] = useState([]);
+  const [cups, setCups] = useState([]);
+  const [leagues, setLeagues] = useState([]);
+
+  const [date, setDate] = useState(initialDate);
+  const [goalsHome, setGoalsHome] = useState(initialGoalsHome);
+  const [goalsAway, setGoalsAway] = useState(initialGoalsAway);
+  const [observations, setObservations] = useState(initialObservations);
+  const [chronicle, setChronicle] = useState(initialChronicle);
+  const [selectedHomeTeam, setSelectedHomeTeam] = useState(initialHomeTeam);
+  const [selectedAwayTeam, setSelectedAwayTeam] = useState(initialAwayTeam);
+  const [selectedReferee, setSelectedReferee] = useState(initialReferee);
+  const [selectedStadium, setSelectedStadium] = useState(initialStadium);
+  const [selectedCup, setSelectedCup] = useState(initialCup);
+  const [selectedLeague, setSelectedLeague] = useState(initialLeague);
 
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/team`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch teams");
+        }
+        const data = await res.json();
+        setTeams(data.teams || []);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        setTeams([]);
+      }
+    };
+
+    const fetchReferees = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/referee`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch referees");
+        }
+        const data = await res.json();
+        setReferees(data.referees || []);
+      } catch (error) {
+        console.error("Error fetching referees:", error);
+        setReferees([]);
+      }
+    };
+
+    const fetchStadiums = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/stadium`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch stadiums");
+        }
+        const data = await res.json();
+        setStadiums(data.stadiums || []);
+      } catch (error) {
+        console.error("Error fetching stadiums:", error);
+        setStadiums([]);
+      }
+    };
+
+    const fetchCups = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/matchCup`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch cups");
+        }
+        const data = await res.json();
+        setCups(data.matchCups || []);
+      } catch (error) {
+        console.error("Error fetching cups:", error);
+        setCups([]);
+      }
+    };
+
+    const fetchLeagues = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/matchLeague`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch leagues");
+        }
+        const data = await res.json();
+        setLeagues(data.matchLeagues || []);
+      } catch (error) {
+        console.error("Error fetching leagues:", error);
+        setLeagues([]);
+      }
+    };
+
+    fetchTeams();
+    fetchReferees();
+    fetchStadiums();
+    fetchCups();
+    fetchLeagues();
+    setDate(initialDate || "");
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (selectedHomeTeam === selectedAwayTeam) {
+      alert("Home team and away team cannot be the same.");
+      return;
+    }
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -49,17 +137,17 @@ export default function EditMatchForm({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          date: matchDate,
-          goals_home: goalsHomeState,
-          goals_away: goalsAwayState,
-          observations: observationsState,
-          chronicle: chronicleState,
-          referee: refereeState,
-          home_team: homeTeamState,
-          away_team: awayTeamState,
-          stadium: stadiumState,
-          league: leagueState,
-          cup: cupState,
+          date,
+          goals_home: goalsHome,
+          goals_away: goalsAway,
+          observations,
+          chronicle,
+          referee: selectedReferee,
+          home_team: selectedHomeTeam,
+          away_team: selectedAwayTeam,
+          stadium: selectedStadium,
+          league: selectedLeague,
+          cup: selectedCup,
         }),
       });
 
@@ -67,8 +155,7 @@ export default function EditMatchForm({
         throw new Error("Failed to update match");
       }
 
-      router.refresh();
-      router.push("/"); // Redirect to the desired page
+      router.push("/"); // Redirect to the home page or any other desired page
     } catch (error) {
       console.log(error);
     }
@@ -76,84 +163,67 @@ export default function EditMatchForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <label className="font-bold" htmlFor="date">
-        Match Date:
+      <label htmlFor="date" className="font-bold">
+        Date:
       </label>
       <input
         id="date"
-        type="datetime-local"
-        value={matchDate}
-        onChange={(e) => setMatchDate(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       />
 
-      <label className="font-bold" htmlFor="goalsHome">
+      <label htmlFor="goalsHome" className="font-bold">
         Goals Home:
       </label>
       <input
         id="goalsHome"
         type="number"
-        value={goalsHomeState}
-        onChange={(e) => setGoalsHomeState(Number(e.target.value))}
-        className="border border-slate-500 px-8 py-2"
+        value={goalsHome}
+        onChange={(e) => setGoalsHome(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       />
 
-      <label className="font-bold" htmlFor="goalsAway">
+      <label htmlFor="goalsAway" className="font-bold">
         Goals Away:
       </label>
       <input
         id="goalsAway"
         type="number"
-        value={goalsAwayState}
-        onChange={(e) => setGoalsAwayState(Number(e.target.value))}
-        className="border border-slate-500 px-8 py-2"
+        value={goalsAway}
+        onChange={(e) => setGoalsAway(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       />
 
-      <label className="font-bold" htmlFor="observations">
+      <label htmlFor="observations" className="font-bold">
         Observations:
       </label>
       <textarea
         id="observations"
-        value={observationsState}
-        onChange={(e) => setObservationsState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={observations}
+        onChange={(e) => setObservations(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       />
 
-      <label className="font-bold" htmlFor="chronicle">
+      <label htmlFor="chronicle" className="font-bold">
         Chronicle:
       </label>
       <textarea
         id="chronicle"
-        value={chronicleState}
-        onChange={(e) => setChronicleState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={chronicle}
+        onChange={(e) => setChronicle(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       />
 
-      <label className="font-bold" htmlFor="referee">
-        Referee:
-      </label>
-      <select
-        id="referee"
-        value={refereeState}
-        onChange={(e) => setRefereeState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
-      >
-        <option value="">Select Referee</option>
-        {referees.map((ref) => (
-          <option key={ref._id} value={ref._id}>
-            {ref.name}
-          </option>
-        ))}
-      </select>
-
-      <label className="font-bold" htmlFor="homeTeam">
+      <label htmlFor="homeTeam" className="font-bold">
         Home Team:
       </label>
       <select
         id="homeTeam"
-        value={homeTeamState}
-        onChange={(e) => setHomeTeamState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={selectedHomeTeam}
+        onChange={(e) => setSelectedHomeTeam(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       >
         <option value="">Select Home Team</option>
         {teams.map((team) => (
@@ -163,31 +233,50 @@ export default function EditMatchForm({
         ))}
       </select>
 
-      <label className="font-bold" htmlFor="awayTeam">
+      <label htmlFor="awayTeam" className="font-bold">
         Away Team:
       </label>
       <select
         id="awayTeam"
-        value={awayTeamState}
-        onChange={(e) => setAwayTeamState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={selectedAwayTeam}
+        onChange={(e) => setSelectedAwayTeam(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       >
         <option value="">Select Away Team</option>
-        {teams.map((team) => (
-          <option key={team._id} value={team._id}>
-            {team.name}
+        {teams
+          .filter((team) => team._id !== selectedHomeTeam) // Filter out the selected home team
+          .map((team) => (
+            <option key={team._id} value={team._id}>
+              {team.name}
+            </option>
+          ))}
+      </select>
+
+      <label htmlFor="referee" className="font-bold">
+        Referee:
+      </label>
+      <select
+        id="referee"
+        value={selectedReferee}
+        onChange={(e) => setSelectedReferee(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
+      >
+        <option value="">Select Referee</option>
+        {referees.map((referee) => (
+          <option key={referee._id} value={referee._id}>
+            {referee.name}
           </option>
         ))}
       </select>
 
-      <label className="font-bold" htmlFor="stadium">
+      <label htmlFor="stadium" className="font-bold">
         Stadium:
       </label>
       <select
         id="stadium"
-        value={stadiumState}
-        onChange={(e) => setStadiumState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={selectedStadium}
+        onChange={(e) => setSelectedStadium(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       >
         <option value="">Select Stadium</option>
         {stadiums.map((stadium) => (
@@ -197,41 +286,44 @@ export default function EditMatchForm({
         ))}
       </select>
 
-      <label className="font-bold" htmlFor="league">
+      <label htmlFor="league" className="font-bold">
         League:
       </label>
       <select
         id="league"
-        value={leagueState}
-        onChange={(e) => setLeagueState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={selectedLeague}
+        onChange={(e) => setSelectedLeague(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       >
         <option value="">Select League</option>
         {leagues.map((league) => (
           <option key={league._id} value={league._id}>
-            {league.name}
+            {league.competition_name}
           </option>
         ))}
       </select>
 
-      <label className="font-bold" htmlFor="cup">
+      <label htmlFor="cup" className="font-bold">
         Cup:
       </label>
       <select
         id="cup"
-        value={cupState}
-        onChange={(e) => setCupState(e.target.value)}
-        className="border border-slate-500 px-8 py-2"
+        value={selectedCup}
+        onChange={(e) => setSelectedCup(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
       >
         <option value="">Select Cup</option>
         {cups.map((cup) => (
           <option key={cup._id} value={cup._id}>
-            {cup.name}
+            {cup.competition_name}
           </option>
         ))}
       </select>
 
-      <button className="bg-green-600 font-bold text-white py-3 px-6 w-fit">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+      >
         Update Match
       </button>
     </form>

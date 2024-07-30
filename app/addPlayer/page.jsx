@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function AddPlayerForm() {
   const [sportsmen, setSportsmen] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [selectedSportsman, setSelectedSportsman] = useState("");
   const [team, setTeam] = useState("");
   const [position, setPosition] = useState("");
@@ -30,7 +31,21 @@ export default function AddPlayerForm() {
         console.error("Failed to fetch sportsmen:", error);
       }
     }
-
+    const fetchTeams = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/team`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch teams");
+        }
+        const data = await res.json();
+        setTeams(data.teams || []);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        setTeams([]);
+      }
+    };
+    fetchTeams();
     fetchSportsmen();
   }, []);
 
@@ -92,13 +107,22 @@ export default function AddPlayerForm() {
         ))}
       </select>
 
-      <input
-        onChange={(e) => setTeam(e.target.value)}
+      <label htmlFor="team" className="font-bold">
+        Team:
+      </label>
+      <select
+        id="team"
         value={team}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Team ID"
-      />
+        onChange={(e) => setTeam(e.target.value)}
+        className="border border-slate-500 px-4 py-2"
+      >
+        <option value="">Select Team</option>
+        {teams.map((team) => (
+          <option key={team._id} value={team._id}>
+            {team.name}
+          </option>
+        ))}
+      </select>
 
       <input
         onChange={(e) => setPosition(e.target.value)}

@@ -27,6 +27,7 @@ export default function EditPlayerForm({
   const [yellow2, setYellow2] = useState(initialYellow2);
   const [red, setRed] = useState(initialRed);
   const [sportsmen, setSportsmen] = useState([]);
+  const [teams, setTeams] = useState([]);
   const router = useRouter();
 
   // Fetch sportsmen data
@@ -45,6 +46,20 @@ export default function EditPlayerForm({
       }
     };
 
+    const fetchTeams = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/api/team`, {
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error("Failed to fetch teams");
+        const { teams } = await res.json();
+        setTeams(teams);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
+    fetchTeams();
     fetchSportsmen();
   }, []);
 
@@ -107,13 +122,22 @@ export default function EditPlayerForm({
         </select>
       </label>
 
-      <input
-        onChange={(e) => setTeam(e.target.value)}
-        value={team}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Team ID"
-      />
+      <label htmlFor="team" className="flex flex-col">
+        <span className="mb-1">Team</span>
+        <select
+          id="team"
+          value={team}
+          onChange={(e) => setTeam(e.target.value)}
+          className="border border-slate-500 px-4 py-2"
+        >
+          <option value="">Select Team</option>
+          {teams.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <input
         onChange={(e) => setPosition(e.target.value)}
