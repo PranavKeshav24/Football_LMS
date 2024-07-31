@@ -1,8 +1,18 @@
+// LandingPage.jsx
+
 "use client";
+import { useRef } from "react";
 import Link from "next/link";
 import FootballModel from "./FootballModel";
 
 export default function LandingPage() {
+  const featuresRef = useRef(null);
+
+  const handleLearnMoreClick = (e) => {
+    e.preventDefault();
+    featuresRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <main className="flex-1">
@@ -18,7 +28,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Link
-                  href="#"
+                  href="/userLogin"
                   className="inline-flex h-10 items-center justify-center rounded-2xl bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                   prefetch={false}
                 >
@@ -26,6 +36,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="#"
+                  onClick={handleLearnMoreClick}
                   className="inline-flex h-10 items-center justify-center rounded-2xl border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                   prefetch={false}
                 >
@@ -38,11 +49,18 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+        <section
+          ref={featuresRef}
+          className="w-full py-12 md:py-24 lg:py-32 bg-muted"
+        >
           <div className="container grid gap-12 px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">
+                <div
+                  className="inline-block rounded-lg bg-muted px-3 py-1 text-sm"
+                  ref={featuresRef}
+                  id="features"
+                >
                   Key Features
                 </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">

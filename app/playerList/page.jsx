@@ -57,17 +57,13 @@ export default function PlayerList() {
     setIsSortMenuOpen(false); // Close the sort menu after selection
   };
   const handleFilterPosition = (position) => {
-    setFilter((prevFilter) => ({
-      ...prevFilter,
+    setFilter({
       position: position === "all" ? "all" : position.toLowerCase(),
-    }));
+    });
     setIsFilterMenuOpen(false); // Close the filter menu after selection
   };
   const handleFilterTeam = (team) => {
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      team: team === "all" ? "all" : team.toLowerCase(),
-    }));
+    setFilter({ team: team === "all" ? "all" : team });
     setIsFilterMenuOpen(false); // Close the filter menu after selection
   };
 
@@ -81,14 +77,10 @@ export default function PlayerList() {
           player.name.toLowerCase().includes(search.toLowerCase())
       )
       .filter((player) =>
-        filter.position === "all"
-          ? true
-          : player.position && player.position.toLowerCase() === filter.position
+        filter.position === "all" ? true : player.position === filter.position
       )
       .filter((player) =>
-        filter.team === "all"
-          ? true
-          : player.team && player.team.toLowerCase() === filter.team
+        filter.team === "all" ? true : player.team === filter.team
       );
   }, [players, search, sort, filter]);
 
