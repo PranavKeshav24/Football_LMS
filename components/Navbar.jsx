@@ -2,26 +2,29 @@
 
 "use client";
 import Link from "next/link";
-import { Router } from "next/router";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { HiOutlineGlobeAlt } from "react-icons/hi";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const isAuthenticated = useAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const handleFeaturesClick = (e) => {
-    const isAuthenticated = useAuth();
-    if (!isAuthenticated) {
-      Router.push("/userLogin");
-    }
     e.preventDefault();
-    const featuresSection = document.getElementById("features");
-    if (featuresSection) {
-      featuresSection.scrollIntoView({ behavior: "smooth" });
+    if (!isAuthenticated) {
+      router.push("/userLogin");
+    } else {
+      const featuresSection = document.getElementById("features");
+      if (featuresSection) {
+        featuresSection.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
