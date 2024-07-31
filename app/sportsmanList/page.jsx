@@ -30,9 +30,26 @@ const fetchSportsmen = async () => {
     return [];
   }
 };
-
+const fetchTeams = async () => {
+  try {
+    const res = await fetch(`${apiUrl}/api/team`, {
+      cache: "no-store",
+    });
+    const data = await res.json();
+    if (Array.isArray(data.teams)) {
+      return data.teams;
+    } else {
+      console.error("Fetched data is not an array", data);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+    return [];
+  }
+};
 export default function SportsmanList() {
   const [sportsmen, setSportsmen] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ key: "name", order: "asc" });
   const [filter, setFilter] = useState({ team: "all" });
@@ -45,6 +62,12 @@ export default function SportsmanList() {
       setSportsmen(data);
     };
     getSportsmen();
+
+    const getTeams = async () => {
+      const data = await fetchTeams();
+      setTeams(data);
+    };
+    getTeams();
   }, []);
 
   const handleSearch = (e) => setSearch(e.target.value);
@@ -120,9 +143,11 @@ export default function SportsmanList() {
                       className="w-full p-2 border rounded"
                     >
                       <option value="all">All Teams</option>
-                      <option value="team1">Team 1</option>
-                      <option value="team2">Team 2</option>
-                      <option value="team3">Team 3</option>
+                      {teams.map((team) => (
+                        <option key={team.id} value={team.name}>
+                          {team.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
