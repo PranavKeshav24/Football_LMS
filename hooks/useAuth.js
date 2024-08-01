@@ -9,13 +9,20 @@ export function useAuth() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login");
-      } else {
+      if (token) {
         setIsAuthenticated(true);
       }
     }
-  }, [router]);
+  }, []);
 
-  return isAuthenticated;
+  const checkAuthAndRedirect = (path) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/userLogin");
+    } else {
+      router.push(path);
+    }
+  };
+
+  return { isAuthenticated, checkAuthAndRedirect };
 }
