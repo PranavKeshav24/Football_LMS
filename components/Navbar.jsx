@@ -1,16 +1,14 @@
-// Navbar.jsx
-
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HiOutlineGlobeAlt } from "react-icons/hi";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { checkAuthAndRedirect } = useAuth();
   const router = useRouter();
-  const isAuthenticated = useAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -18,7 +16,8 @@ export default function Navbar() {
 
   const handleFeaturesClick = (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       router.push("/userLogin");
     } else {
       const featuresSection = document.getElementById("features");
